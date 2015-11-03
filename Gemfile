@@ -20,6 +20,8 @@ gem 'd3_rails'
 gem 'topojson-rails'
 gem 'c3-rails'
 
+gem 'geonames_api'
+
 
 group :development, :test do
  
