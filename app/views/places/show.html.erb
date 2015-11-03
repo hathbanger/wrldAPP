@@ -1,0 +1,12 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong><%= @place.name %></strong><br>
+  <%= @place.longitude %><br>
+  <%= @place.latitude %><br>
+  <%= @place.rainData %><br>
+  <%= @place.tempData %><br>
+</p>
+
+<%= link_to 'Edit', edit_place_path(@place) %> |
+<%= link_to 'Back', places_path %>
