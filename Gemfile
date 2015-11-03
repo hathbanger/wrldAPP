@@ -21,7 +21,7 @@ gem 'topojson-rails'
 gem 'c3-rails'
 
 gem 'geonames_api'
-
+gem 'wunderground'
 
 group :development, :test do
  

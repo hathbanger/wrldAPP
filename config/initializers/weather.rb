@@ -1,0 +1,1 @@
+@w_api = Wunderground.new('40deb120c22e57b2')

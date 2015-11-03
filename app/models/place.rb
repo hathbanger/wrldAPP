@@ -28,4 +28,8 @@ class Place < ActiveRecord::Base
 		return @p = @pop.population
 	end
 
+	def currWeather
+		
+	end
+
 end
