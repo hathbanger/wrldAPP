@@ -16,8 +16,9 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'countries', :require => 'global'
 gem 'geocoder'
 gem 'httparty'
-gem 'd3js-rails'
+gem 'd3_rails'
 gem 'topojson-rails'
+gem 'c3-rails'
 
 
 group :development, :test do
