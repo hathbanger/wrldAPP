@@ -10,6 +10,9 @@ class PlacesController < ApplicationController
   # GET /places/1
   # GET /places/1.json
   def show
+    iso2 = @place.iso2.downcase
+    gon.place = @place
+    gon.iso2 = iso2
   end
 
   # GET /places/new

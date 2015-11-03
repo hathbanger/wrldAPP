@@ -22,6 +22,9 @@ gem 'c3-rails'
 
 gem 'geonames_api'
 gem 'wunderground'
+gem 'world-flags'
+
+gem 'gon'
 
 group :development, :test do
  

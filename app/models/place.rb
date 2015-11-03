@@ -23,13 +23,54 @@ class Place < ActiveRecord::Base
 		return @capCity = c[1][0]['capitalCity']
 	end
 
+	def countryGeo
+		return @co = GeoNamesAPI::Country.find(self.iso2)
+	end
+
 	def population
-		@pop = GeoNamesAPI::Country.find(self.iso2)
+		@pop = self.countryGeo
 		return @p = @pop.population
 	end
 
 	def currWeather
-		
+		lon = self.longitude
+		lat = self.latitude
+		getLoc = GeoNamesAPI::Country.find(self.iso2)
+
+		north = getLoc.north.to_s
+		south = getLoc.south.to_s
+		east = getLoc.east.to_s
+		west = getLoc.west.to_s
+
+
+		@currWeather = HTTParty.get("http://api.geonames.org/weatherJSON?north="+north+"&south="+south+"&east="+east+"&west="+west+"&username=hathbanger")
+		return @currWeather
 	end
 
+
+	def temp
+		@temp = self.currWeather['weatherObservations'].first['temperature']
+	end
+
+	def dew
+		@dew = self.currWeather['weatherObservations'].first['dewPoint']
+	end
+
+	def humidity
+		@hum = self.currWeather['weatherObservations'].first['humidity']
+	end
+
+	def windDir
+		@windDirection = self.currWeather['weatherObservations'].first['windDirection']
+	end
+
+	def windSpeed
+		@windSpeed = self.currWeather['weatherObservations'].first['windSpeed']
+	end
+
+
+	def forcastAndConditions
+		@fnc = @w_api
+		return @fnc
+	end
 end

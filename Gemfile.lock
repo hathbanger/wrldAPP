@@ -66,6 +66,12 @@ GEM
       tzinfo
     globalid (0.3.6)
       activesupport (>= 4.1.0)
+    gon (6.0.1)
+      actionpack (>= 3.0)
+      json
+      multi_json
+      request_store (>= 1.0)
+    hashie (3.4.3)
     httparty (0.13.7)
       json (~> 1.8)
       multi_xml (>= 0.5.2)
@@ -120,6 +126,7 @@ GEM
       thor (>= 0.18.1, < 2.0)
     rake (10.4.2)
     rdoc (4.2.0)
+    request_store (1.2.0)
     rubyzip (1.1.7)
     sass (3.4.19)
     sass-rails (5.0.4)
@@ -155,6 +162,9 @@ GEM
       binding_of_caller (>= 0.7.2)
       railties (>= 4.0)
       sprockets-rails (>= 2.0, < 4.0)
+    world-flags (0.6.5)
+      hashie (>= 1.2)
+      i18n (>= 0.6)
     wunderground (1.2.0)
       addressable
       httparty (> 0.6.0)
@@ -171,6 +181,7 @@ DEPENDENCIES
   d3_rails
   geocoder
   geonames_api
+  gon
   httparty
   jbuilder (~> 2.0)
   jquery-rails
@@ -183,6 +194,7 @@ DEPENDENCIES
   turbolinks
   uglifier (>= 1.3.0)
   web-console (~> 2.0)
+  world-flags
   wunderground
 
 BUNDLED WITH

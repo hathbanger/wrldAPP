@@ -6,7 +6,7 @@ require 'zip'
 
 module GeoNamesAPI
 
-GeoNamesAPI.username = "hathbanger.ah@gmail.com"
+	GeoNamesAPI.username = "hathbanger.ah@gmail.com"
 
   mattr_accessor :url
   self.url = 'http://api.geonames.org/'
