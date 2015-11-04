@@ -42,30 +42,35 @@ class Place < ActiveRecord::Base
 		east = getLoc.east.to_s
 		west = getLoc.west.to_s
 		@currWeather = HTTParty.get("http://api.geonames.org/weatherJSON?north="+north+"&south="+south+"&east="+east+"&west="+west+"&username=hathbanger")
-		return @currWeather
+		return @currWeather['weatherObservations']
 	end
 
 
 	def temp
-		@temp = self.currWeather['weatherObservations'].first['temperature']
+		@temp = self.currWeather.first['temperature']
+		
 		return @t = (@temp.to_i * 9/5) + 32
 	end
 
 	def dew
-		@dew = self.currWeather['weatherObservations'].first['dewPoint']
+		@dew = self.currWeather.first['dewPoint']
+		
 		return d = (@dew.to_i * 9/5) + 32
 	end
 
 	def humidity
-		@hum = self.currWeather['weatherObservations'].first['humidity']
+		@hum = self.currWeather.first['humidity']
+		
 	end
 
 	def windDir
-		@windDirection = self.currWeather['weatherObservations'].first['windDirection']
+		@windDirection = self.currWeather.first['windDirection']
+		
 	end
 
 	def windSpeed
-		@windSpeed = self.currWeather['weatherObservations'].first['windSpeed']
+		@windSpeed = self.currWeather.first['windSpeed']
+		
 	end
 
 
