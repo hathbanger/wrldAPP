@@ -1,26 +1,77 @@
-<p id="notice"><%= notice %></p>
-<strong><%= @place.name %></strong><br>
 
-  <div class="f32">
+<div id="container" style="position: relative; width: 500px; height: 600px;"></div>
+
+
+
+<p id="notice"><%= notice %></p>
+
+<div id="rainChart"></div>
+<div id="tempChart"></div>
+<p>
+<h1>
+  <strong><%= @place.name %></strong><br>
+</h1>  
+<div class="f32">
     <div class="flag selected" data-cc=<%= @place.iso2 %> data-country_name=<%= @place.name %> data-locale=<%= @place.iso2 %> title=<%= @place.name %>>&nbsp;</div>
 </div>
-<p>
-  	Capital City: <%= @place.capCity %><br>
-  	Population: <%= @place.population %><br>
-	Temperature: <%= @place.temp %><br>
+
+<div id="chart"></div>
+<h2>  
+    Capital City: <%= @place.capCity %><br>
+    </h2>
+  	<div class="population"> 
+      <h3>Population: <span>  <%= @place.population %></span></h3>
+    </div>
+  Temperature: <%= @place.temp %><br>
+  <div class="iso2">
+    Iso2: <span><%= @place.iso2 %></span><br>
+  </div>
+  <div class="iso3">
+    Iso3: <span><%= @place.iso3 %></span><br>
+  </div>
 	Humidity: <%= @place.humidity %><br>
 	Dewpoint: <%= @place.dew %><br>
 	Wind Speed: <%= @place.windSpeed %><br>
 	Wind Direction: <%= @place.windDir %><br>
-	Forcast and Conditions: <%= @place.forcastAndConditions %><br>
-	Current Weather: <%= @place.currWeather %><br>
-  	<%= @place.longitude %><br>
-  	<%= @place.latitude %><br>
-  	<%= @place.rainData %><br>
-  	<%= @place.tempData %><br>
+
+ 
+
+
+  <% @place.currWeather.each do |x| %>
+  <div class="stationInfo" id=<%= x['stationName'].downcase %>>
+  <strong><div class="stationName"><%= x['stationName'] %></div>:</strong>  Latitude: <div class="latitude"><%= x['lat'] %></div>, Longitude: <div class="longitude"><%= x['lng'] %></div>,  <%= x['clouds'] %>, Temperature: <%= x['temperature'] %>, Humidity: <%= x['humidity'] %>, Dewpoint: <%= x['dewPoint'] %>,  Wind Direction: <%= x['windDirection'] %>,  Wind Speed: <%= x['windSpeed'] %>
+    </div>
+  <% end %> 
+
+    <br>
+    <br>
+    <br>
+    <br>
+
+  <% @place.forcastAndConditions do |x| %>
+    <%= x  %>
+    <br>
+    <br>
+  <% end %>
+  <br>
+      <div class="longitude"> 
+      <h3>longitude: <span>  <%= @place.longitude %><br></span></h3>
+    </div>
+      <div class="latitude"> 
+      <h3>latitude: <span>  <%= @place.latitude %><br></span></h3>
+    </div>
+  	
+
+
+
+    <% @place.rainData.each do |x| %>
+      <span class="rainMonth"><%= x['monthVals'] %></span>
+    <% end %>
+    <% @place.tempData.each do |x| %>
+      <span class="tempMonth"><%= x['monthVals'] %></span>
+    <% end %> 
 </p>
 
-<div id="chart"></div>
 <%= link_to 'Edit', edit_place_path(@place) %> |
 <%= link_to 'Back', places_path %>
 
@@ -28,16 +79,24 @@
 $(document).ready(function(){	
 
 
-	console.log(gon.iso2);
 
-	$('.f32 li').addClass(gon.iso2)
+  var population = $('.population span').text();
+  var iso2 = $('body .iso2 span').text().toLowerCase();
+  var iso3 = $('body .iso3 span').text();
+  console.log(population);
 
+  var lon = $('.longitude span').text();
+  var lat = $('.latitude span').text();
+
+
+	$('.f32 .flag').addClass(iso2)
+console.log(lon)
 var chart = c3.generate({
     data: {
         // iris data from R
         columns: [
-            ['data1', 30],
-            ['data2', 120],
+            ['Population', population],
+            ['Global Population', 7378469780],
         ],
         type : 'pie',
         onclick: function (d, i) { console.log("onclick", d, i); },
@@ -45,6 +104,268 @@ var chart = c3.generate({
         onmouseout: function (d, i) { console.log("onmouseout", d, i); }
     }
 });	
-})
+
+
+
+function addArr(data, target){
+
+  console.log(target.selector)
+  var rainH = data
+  var rainArr = [];
+  var rainTemp = [];
+
+
+  for(var k = 0; k < rainH.size(); k++){
+    var item = rainH[k].innerHTML;
+    rainArr.push($.parseJSON(item));
+  }
+
+  for(var k = 0; k < rainH.size(); k++){
+    var item = rainH[k].innerHTML;
+    var rainArr = [];
+    for(var e = 0; e < rainH.size(); e++){
+      rainArr.push($.parseJSON(item)[e]);
+    }
+    rainTemp.push(['data'+k+"'", rainArr[1],rainArr[2],rainArr[3],rainArr[4],rainArr[5],rainArr[6],rainArr[7],rainArr[8],rainArr[9],rainArr[10],rainArr[11]]);
+  }
+
+  var wid = $(document).width();
+  target.width(wid/2)
+  var chart2 = c3.generate({
+      bindto: target.selector,
+      data: {
+        columns: [
+          rainTemp[1]
+        ],
+        type: 'spline',
+        axes: {
+          data2: 'y2' // ADD
+        }
+      },
+      axis: {
+        y2: {
+          show: true // ADD
+        }
+      }
+    });
+
+  setTimeout(function () {
+      chart2.load({
+          columns: [
+              rainTemp[2]
+          ]
+      });
+  }, 1000);
+
+  setTimeout(function () {
+      chart2.load({
+          columns: [
+              rainTemp[3],
+          ]
+      });
+  }, 1500);
+
+  setTimeout(function () {
+      chart2.load({
+          columns: [
+              rainTemp[4],
+          ]
+      });
+  }, 2500);
+
+  setTimeout(function () {
+      chart2.load({
+          columns: [
+              rainTemp[5],
+          ]
+      });
+  }, 3500);
+
+  setTimeout(function () {
+      chart2.load({
+          columns: [
+              rainTemp[6],
+          ]
+      });
+  }, 4500);
+
+  setTimeout(function () {
+      chart2.load({
+          columns: [
+              rainTemp[7],
+          ]
+      });
+  }, 5500);
+
+  setTimeout(function () {
+      chart2.load({
+          columns: [
+              rainTemp[8],
+          ]
+      });
+  }, 6500);
+
+  setTimeout(function () {
+      chart2.load({
+          columns: [
+              rainTemp[9],
+          ]
+      });
+  }, 7500);
+
+  setTimeout(function () {
+      chart2.load({
+          columns: [
+              rainTemp[10],
+          ]
+      });
+  }, 8500);
+
+  setTimeout(function () {
+      chart2.load({
+          columns: [
+              rainTemp[12],
+          ]
+      });
+  }, 9500);
+
+  setTimeout(function () {
+      chart2.unload({
+          ids: 'data1'
+      });
+  }, 10500);
+
+
+}
+
+var w = $(document).width();
+
+$('#container').width(w);
+
+    var map = new Datamap({
+        element: document.getElementById('container'),
+        scope: 'world',
+        fills: {
+            HIGH: '#afafaf',
+            LOW: '#123456',
+            MEDIUM: 'blue',
+            UNKNOWN: 'rgb(0,0,0)',
+            defaultFill: 'green'
+        },
+        data: {
+            IRL: {
+                fillKey: 'LOW',
+                numberOfThings: 2002
+            },
+            USA: {
+                fillKey: 'MEDIUM',
+                numberOfThings: 10381
+            }
+        },
+        setProjection: function(element) {
+            var projection = d3.geo.mercator()
+              .center([lon, lat])
+              .rotate([4.4, 0])
+              .scale(1200)
+              .translate([element.offsetWidth / 2, element.offsetHeight / 2]);
+            var path = d3.geo.path()
+              .projection(projection);
+            
+            return {path: path, projection: projection};
+          },
+        geographyConfig: {
+            popupTemplate: function(geo, data) {
+                return ['<div class="hoverinfo"><strong>',
+                        'Number of things in ' + geo.properties.name,
+                        ': ' + data.numberOfThings,
+                        '</strong></div>'].join('');
+            }
+        }
+
+   }); 
+
+console.log($('.stationInfo')[0].innerText);
+var stations = $('.stationInfo');
+
+
+function stationLoop(){
+  for(var j = 0; j < stations.size(); j++){
+    var station = stations[j];
+    console.log(station)
+    map.bubbles([
+      {
+        name: station.innerText.stationName,
+        radius: 7,
+        yeild: 15000,
+        country: iso3,
+        significance: 'First dry fusion fuel "staged" thermonuclear weapon; a serious nuclear fallout accident occurred',
+        fillKey: 'USA',
+        date: '1954-03-01',
+        latitude: station.innerText.Latitude,
+        longitude: station.innerText.Lontitude
+      }
+    ])
+  }
+
+}
+
+stationLoop()
+
+
+// map.bubbles([
+//   {
+//     name: 'Castle Bravo',
+//     radius: 7,
+//     yeild: 15000,
+//     country: iso3,
+//     significance: 'First dry fusion fuel "staged" thermonuclear weapon; a serious nuclear fallout accident occurred',
+//     fillKey: 'USA',
+//     date: '1954-03-01',
+//     latitude: lat,
+//     longitude: lon
+//   }
+// ])
+
+
+
+// var basic = new Datamap({
+//   element: document.getElementById("container"),
+//   scope: 'world',
+//   // Zoom in on Africa
+//   setProjection: function(element) {
+//     var projection = d3.geo.mercator()
+//       .center([lon, lat])
+//       .rotate([4.4, 0])
+//       .scale(1200)
+//       .translate([element.offsetWidth / 2, element.offsetHeight / 2]);
+//     var path = d3.geo.path()
+//       .projection(projection);
+    
+//     return {path: path, projection: projection};
+//   }
+// });
+       
+  console.log(lon)
+
+var r = $('.rainMonth');
+var c = $('#rainChart');
+var tm = $('.tempMonth');
+var t = $('#tempChart');
+
+addArr(r, c);
+addArr(tm, t);
+
+// var arrRain = ['data', rainArr[1],rainArr[2],rainArr[3],rainArr[4],rainArr[5],rainArr[6],rainArr[7],rainArr[8],rainArr[9],rainArr[10],rainArr[11],rainArr[12],rainArr[13]];
+
+});
 
 </script>
+
+
+
+
+
+
+
+
+
