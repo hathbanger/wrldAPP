@@ -75,7 +75,7 @@ class Place < ActiveRecord::Base
 
 
 	def forcastAndConditions
-		@fnc = @w_api
+		@fnc 
 		return @fnc
 	end
 end

@@ -1,24 +1,32 @@
+<div class="station">
+  <img class="webcam1"></img>
+</div>
 
 <div id="container" style="position: relative; width: 500px; height: 600px;"></div>
 
-
-
 <p id="notice"><%= notice %></p>
 
-<div id="rainChart"></div>
-<div id="tempChart"></div>
+<div class="chartHolder" id="rainChart">
+</div>
+
+<div class="chartHolder" id="tempChart">
+  
+</div>
+
 <p>
+<h1><strong><span class="placeName"><%= @place.name %></span></strong></h1><br>
+
+
 <h1>
-  <strong><%= @place.name %></strong><br>
+
 </h1>  
 <div class="f32">
     <div class="flag selected" data-cc=<%= @place.iso2 %> data-country_name=<%= @place.name %> data-locale=<%= @place.iso2 %> title=<%= @place.name %>>&nbsp;</div>
 </div>
 
-<div id="chart"></div>
 <h2>  
-    Capital City: <%= @place.capCity %><br>
-    </h2>
+    Capital City: <div class="capitalCity"><%= @place.capCity %></div><br>
+</h2>
   	<div class="population"> 
       <h3>Population: <span>  <%= @place.population %></span></h3>
     </div>
@@ -34,12 +42,24 @@
 	Wind Speed: <%= @place.windSpeed %><br>
 	Wind Direction: <%= @place.windDir %><br>
 
- 
-
-
+<div>
+ <%= @res %>
+</div>
   <% @place.currWeather.each do |x| %>
+
+
+
   <div class="stationInfo" id=<%= x['stationName'].downcase %>>
-  <strong><div class="stationName"><%= x['stationName'] %></div>:</strong>  Latitude: <div class="latitude"><%= x['lat'] %></div>, Longitude: <div class="longitude"><%= x['lng'] %></div>,  <%= x['clouds'] %>, Temperature: <%= x['temperature'] %>, Humidity: <%= x['humidity'] %>, Dewpoint: <%= x['dewPoint'] %>,  Wind Direction: <%= x['windDirection'] %>,  Wind Speed: <%= x['windSpeed'] %>
+  <strong>
+    <div class="stationName"><%= x['stationName'] %></div>:
+  </strong>  
+  Latitude: <div class="latitude"><%= x['lat'] %></div>, Longitude: <div class="longitude"><%= x['lng'] %></div>,  
+  Clouds: <%= x['clouds'] %>, 
+  Temperature: <%= x['temperature'] %>, 
+  Humidity: <%= x['humidity'] %>, 
+  Dewpoint: <%= x['dewPoint'] %>,  
+  Wind Direction: <%= x['windDirection'] %>,  
+  Wind Speed: <%= x['windSpeed'] %>
     </div>
   <% end %> 
 
@@ -72,6 +92,7 @@
     <% end %> 
 </p>
 
+<div id="chart"></div>
 <%= link_to 'Edit', edit_place_path(@place) %> |
 <%= link_to 'Back', places_path %>
 
@@ -87,6 +108,7 @@ $(document).ready(function(){
 
   var lon = $('.longitude span').text();
   var lat = $('.latitude span').text();
+  var place = $(' .placeName').text();
 
 
 	$('.f32 .flag').addClass(iso2)
@@ -126,7 +148,7 @@ function addArr(data, target){
     for(var e = 0; e < rainH.size(); e++){
       rainArr.push($.parseJSON(item)[e]);
     }
-    rainTemp.push(['data'+k+"'", rainArr[1],rainArr[2],rainArr[3],rainArr[4],rainArr[5],rainArr[6],rainArr[7],rainArr[8],rainArr[9],rainArr[10],rainArr[11]]);
+    rainTemp.push(['data'+k, rainArr[1],rainArr[2],rainArr[3],rainArr[4],rainArr[5],rainArr[6],rainArr[7],rainArr[8],rainArr[9],rainArr[10],rainArr[11]]);
   }
 
   var wid = $(document).width();
@@ -155,7 +177,7 @@ function addArr(data, target){
               rainTemp[2]
           ]
       });
-  }, 1000);
+  }, 500);
 
   setTimeout(function () {
       chart2.load({
@@ -299,7 +321,7 @@ function stationLoop(){
         yeild: 15000,
         country: iso3,
         significance: 'First dry fusion fuel "staged" thermonuclear weapon; a serious nuclear fallout accident occurred',
-        fillKey: 'USA',
+        fillKey: iso3,
         date: '1954-03-01',
         latitude: station.innerText.Latitude,
         longitude: station.innerText.Lontitude
@@ -326,24 +348,6 @@ stationLoop()
 //   }
 // ])
 
-
-
-// var basic = new Datamap({
-//   element: document.getElementById("container"),
-//   scope: 'world',
-//   // Zoom in on Africa
-//   setProjection: function(element) {
-//     var projection = d3.geo.mercator()
-//       .center([lon, lat])
-//       .rotate([4.4, 0])
-//       .scale(1200)
-//       .translate([element.offsetWidth / 2, element.offsetHeight / 2]);
-//     var path = d3.geo.path()
-//       .projection(projection);
-    
-//     return {path: path, projection: projection};
-//   }
-// });
        
   console.log(lon)
 
@@ -358,6 +362,35 @@ addArr(tm, t);
 // var arrRain = ['data', rainArr[1],rainArr[2],rainArr[3],rainArr[4],rainArr[5],rainArr[6],rainArr[7],rainArr[8],rainArr[9],rainArr[10],rainArr[11],rainArr[12],rainArr[13]];
 
 });
+
+  var place = $(' .placeName').text();
+  var capCity = $(' .capitalCity').text();
+  console.log(place);
+  console.log(capCity);
+
+
+
+$.ajax({
+  url: "http://api.wunderground.com/api/40deb120c22e57b2/webcams/q/"+ place +"/"+ capCity +".json",
+  beforeSend: function( xhr ) {
+    xhr.overrideMimeType( "text/plain; charset=x-user-defined" );
+    
+  }
+})
+  .done(function( data ) {
+    if ( console && console.log ) {
+      var extractedData = $.parseJSON(data).webcams[0];
+      console.log(extractedData);
+      
+      if(extractedData != null){
+        var img1 = extractedData.CURRENTIMAGEURL;
+        console.log(img1);
+        $('.webcam1').attr('src', img1)
+      }
+    }
+  });
+
+
 
 </script>
 

@@ -5,14 +5,21 @@ class PlacesController < ApplicationController
   # GET /places.json
   def index
     @places = Place.all
+    @place = Place.first
   end
 
   # GET /places/1
   # GET /places/1.json
   def show
+
+    # @place = Place.find(params[:name])
+
     iso2 = @place.iso2.downcase
     gon.place = @place
     gon.iso2 = iso2
+
+
+    @res = @place.forcastAndConditions
   end
 
   # GET /places/new
